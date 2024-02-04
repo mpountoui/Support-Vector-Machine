@@ -1,15 +1,59 @@
-#include <vector>
+#ifndef KERNEL
+#define KERNEL
+
+#include "Vectors.hpp"
+
+/* ----------------------------------------------------------------------------------------- */
+
+enum KernelType
+{
+    LINEAR,
+    POLYNOMIAL,
+    RBF
+};
+
+/* ----------------------------------------------------------------------------------------- */
+
+struct SupportVectors
+{
+    int    y = 0;
+    double a = 0.0;
+    Vector x;
+};
+
+/* ----------------------------------------------------------------------------------------- */
 
 class Kernel
 {
-public:
+protected:
     Kernel()                         = default;
     Kernel(Kernel const&)            = delete;
     Kernel(Kernel&&)                 = delete;
     Kernel& operator=(Kernel const&) = delete;
     Kernel& operator=(Kernel&&)      = delete;
-    ~Kernel()                        = default;
+
+public: 
+    virtual ~Kernel()                = default;
 
 public:
-    double operator()(std::vector<double> const&, std::vector<double> const&) const;
+    virtual void W_InitializeIfLinearKernel(std::vector<int>    const&,
+                                            std::vector<double> const&,
+                                            std::vector<Vector> const&) = 0;
+
+    virtual void W_UpdateIfLinearKernel(int, double, Vector const&,
+                                        int, double, Vector const&) = 0;
+
+    virtual void SaveSupportVectorsIfNonLinear(std::vector<int>    const&,
+                                               std::vector<double> const&,
+                                               std::vector<Vector> const&) = 0;
+
+    virtual double Predict(Vector const&, double) = 0;
+
+    virtual double operator()(Vector const&, Vector const&) const = 0;
 };
+
+/* ----------------------------------------------------------------------------------------- */
+
+Kernel* ContructKernel(KernelType);
+
+#endif

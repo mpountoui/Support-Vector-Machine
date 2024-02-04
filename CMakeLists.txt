@@ -1,6 +1,10 @@
 cmake_minimum_required(VERSION 3.1)
 project(SUPPORT-VECTOR-MACHINE)
 
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
+
 include_directories("${CMAKE_SOURCE_DIR}/include")
 
 file (GLOB SOURCE_FILES "src/*.cpp")
@@ -21,3 +25,17 @@ install(TARGETS mySVM
   	COMPONENT python
   	LIBRARY DESTINATION ${PYTHON_LIBRARY_DIR}
   )
+
+ADD_LIBRARY(LibsModule
+	"src/Kernels.cpp"
+	"src/Sequential_minimal_optimization.cpp"
+	"src/Support_vector_machine.cpp"
+    "src/Vectors.cpp"
+)
+add_executable(UnitTests "src/UnitTests.cpp")
+target_link_libraries(UnitTests LibsModule)
+
+# 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
+#cmake .. -D PYTHON_LIBRARY_DIR="/Users/ioannisbountouris/Support-Vector-Machine/venv/lib/python3.9/site-packages"
+#make
+#make install

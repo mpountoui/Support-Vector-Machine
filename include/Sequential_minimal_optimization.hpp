@@ -1,23 +1,40 @@
-#include <cstdio>
+#ifndef SEQUENTIAL_MINIMAL_OTIMIZATION
+#define SEQUENTIAL_MINIMAL_OTIMIZATION
+
 #include <vector>
+#include <unordered_map>
 #include "Support_vector_machine.hpp"
 
-class QuadraticProgrammingProblem
+extern double epsilon;
+
+class DualProblem
 {
 private:
     SVM& m_SVM;
+    std::unordered_map<size_t, double> m_Errors;
 
 private:
-    bool PerformStep(size_t, size_t) const;
+    void UpdateLagrangeMultipliers(size_t, size_t, double, double) const;
+
+    bool UpdateErros();
+    bool PerformStep(size_t, size_t, double);
+    bool ExamineExample(size_t);
+
+    size_t ChooseSecondLagrangeMultiplier(double) const;
+    double GetError(size_t) const;
+
+    std::pair<double, double> EndsOfLine(double, double, bool) const;
 
 public:
-    QuadraticProgrammingProblem(SVM&);
-    QuadraticProgrammingProblem(QuadraticProgrammingProblem const&)            = delete;
-    QuadraticProgrammingProblem(QuadraticProgrammingProblem&&)                 = delete;
-    QuadraticProgrammingProblem& operator=(QuadraticProgrammingProblem const&) = delete;
-    QuadraticProgrammingProblem& operator=(QuadraticProgrammingProblem&&)      = delete;
-    ~QuadraticProgrammingProblem()                                             = default;
+    DualProblem(SVM&);
+    DualProblem(DualProblem const&)            = delete;
+    DualProblem(DualProblem&&)                 = delete;
+    DualProblem& operator=(DualProblem const&) = delete;
+    DualProblem& operator=(DualProblem&&)      = delete;
+    ~DualProblem()                             = default;
 
 public:
-    bool Solve() const;
+    bool Solve();
 };
+
+#endif

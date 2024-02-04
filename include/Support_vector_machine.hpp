@@ -1,29 +1,38 @@
+#ifndef SUPPORT_VECTORS_MACHINE
+#define SUPPORT_VECTORS_MACHINE
+
 #include <vector>
 #include "Kernels.hpp"
 
-/* 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 */
+/* ----------------------------------------------------------------------------------------- */
 
 class SVM
 {
-    friend class QuadraticProgrammingProblem;
+    friend class DualProblem;
 
 private:
-    double m_b;
-    std::vector<double> m_LagrMult; /* Lagrange Multipliers */
-    std::vector<double> m_Targets;
-    std::vector<std::vector<double>> m_Samples;
-    Kernel m_Kernel;
+    double m_b = 0.0;
+    double m_C = 2.5;
+    std::vector<double> m_a; /* Lagrange Multipliers */
+    std::vector<Vector> const* m_x = nullptr; /* Samples */
+    std::vector<int>    const* m_y = nullptr; /* Targets */
+    Kernel* m_Kernel = nullptr;
 
 public:
-    SVM()                      = default;
+    SVM();
     SVM(SVM const&)            = delete;
     SVM(SVM&&)                 = delete;
     SVM& operator=(SVM const&) = delete;
     SVM& operator=(SVM&&)      = delete;
-    ~SVM()                     = default;
+    ~SVM();
+
+private:
+    double operator()(Vector const&) const;
 
 public:
-    double operator()(std::vector<double> const&) const;
-    void fit(std::vector<std::vector<double>> const&, std::vector<int> const&) const;
-    void Test();
+    std::vector<double> const& LagrangeMultipliers() const;
+    void Fit(std::vector<Vector> const&, std::vector<int> const&);
+    std::vector<int> Predict(std::vector<Vector> const&) const;
 };
+
+#endif

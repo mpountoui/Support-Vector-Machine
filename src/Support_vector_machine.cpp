@@ -1,16 +1,38 @@
 #include <vector>
 #include <cassert>
 #include "Support_vector_machine.hpp"
+#include "Sequential_minimal_optimization.hpp"
 
 /* ----------------------------------------------------------------------------------------- */
 
-double SVM::operator()(std::vector<double> const& X) const
+SVM::SVM()
+{
+    m_Kernel = ContructKernel(RBF);
+}
+
+/* ----------------------------------------------------------------------------------------- */
+
+SVM::~SVM()
+{
+    delete m_Kernel;
+}
+
+/* ----------------------------------------------------------------------------------------- */
+
+std::vector<double> const& SVM::LagrangeMultipliers() const
+{
+    return m_a;
+}
+
+/* ----------------------------------------------------------------------------------------- */
+
+double SVM::operator()(Vector const& X) const
 {
     double ret = 0.0;
 
-    for(size_t i = 0; i < m_LagrMult.size(); ++i)
+    for(size_t i = 0; i < m_a.size(); ++i)
     {
-        ret += m_Targets[i] * m_LagrMult[i] * m_Kernel(m_Samples[i], X);
+        ret += m_y->operator[](i) * m_a[i] * m_Kernel->operator()( m_x->operator[](i), X );
     }
 
     return ret - m_b;
@@ -18,22 +40,38 @@ double SVM::operator()(std::vector<double> const& X) const
 
 /* ----------------------------------------------------------------------------------------- */
 
-void SVM::fit(std::vector<std::vector<double>> const& x, std::vector<int> const& y) const
+void SVM::Fit(std::vector<Vector> const& x, std::vector<int> const& y)
 {
     if( x.size() != y.size() ){ assert(false); return; }
-    for(size_t i = 0; i < x.size(); ++i)
-    {
-        for(auto feature : x[i])
-        {
-            printf("%lf   " , feature);
-        }
-        printf("\ny %d\n", y[i]);
-    }
+
+    m_x = &x;
+    m_y = &y;
+
+    m_a = std::vector<double>(x.size(), 0.5);
+    m_Kernel->W_InitializeIfLinearKernel(y, m_a, x);
+    DualProblem(*this).Solve();
+    m_Kernel->SaveSupportVectorsIfNonLinear(y, m_a, x);
 }
 
 /* ----------------------------------------------------------------------------------------- */
 
-void SVM::Test()
+std::vector<int> SVM::Predict(std::vector<Vector> const& x_vec) const
 {
-    printf("Hellooooooo!!!\n");
+    std::vector<int> y_vec;
+    y_vec.reserve(x_vec.size());
+
+    for(auto const& x : x_vec)
+    {
+        double ret = m_Kernel->Predict(x, m_b);
+
+        if( ret > 0 )
+        {
+            y_vec.push_back(1);
+        }
+        else
+        {
+            y_vec.push_back(-1);
+        }
+    }
+    return y_vec;
 }
