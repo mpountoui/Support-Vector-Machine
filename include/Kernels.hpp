@@ -1,6 +1,7 @@
 #ifndef KERNEL
 #define KERNEL
 
+#include <vector>
 #include "Vectors.hpp"
 
 /* ----------------------------------------------------------------------------------------- */
@@ -54,6 +55,6 @@ public:
 
 /* ----------------------------------------------------------------------------------------- */
 
-Kernel* ContructKernel(KernelType);
+Kernel* KernelFactory(KernelType, size_t, double, double);
 
 #endif

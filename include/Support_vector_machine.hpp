@@ -12,14 +12,14 @@ class SVM
 
 private:
     double m_b = 0.0;
-    double m_C = 2.5;
+    double m_C = 10.0;
     std::vector<double> m_a; /* Lagrange Multipliers */
     std::vector<Vector> const* m_x = nullptr; /* Samples */
     std::vector<int>    const* m_y = nullptr; /* Targets */
     Kernel* m_Kernel = nullptr;
 
 public:
-    SVM();
+    SVM(KernelType, double, size_t, double, double);
     SVM(SVM const&)            = delete;
     SVM(SVM&&)                 = delete;
     SVM& operator=(SVM const&) = delete;

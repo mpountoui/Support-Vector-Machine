@@ -9,7 +9,7 @@
 class LinearKernel final : private Kernel
 {
 private:
-    friend Kernel* ContructKernel(KernelType);
+    friend Kernel* KernelFactory(KernelType, size_t, double, double);
 
 private:
     Vector m_W;
@@ -35,9 +35,9 @@ public:
     void SaveSupportVectorsIfNonLinear(std::vector<int>    const&,
                                        std::vector<double> const&,
                                        std::vector<Vector> const&) override;
-
+    
     double Predict(Vector const&, double) override;
-        
+    
     double operator()(Vector const&, Vector const&) const override;
 };
 
@@ -78,10 +78,15 @@ public:
 class PolynomialKernel final : private NonLinearKernel
 {
 private:
-    friend Kernel* ContructKernel(KernelType);
+    friend Kernel* KernelFactory(KernelType, size_t, double, double);
 
 private:
-    PolynomialKernel()                                   = default;
+    size_t m_degree = 2;
+    double m_gamma  = 2;
+    double m_r      = 0.0;
+
+private:
+    PolynomialKernel(size_t, double, double);
     PolynomialKernel(PolynomialKernel const&)            = delete;
     PolynomialKernel(PolynomialKernel&&)                 = delete;
     PolynomialKernel& operator=(PolynomialKernel const&) = delete;
@@ -99,13 +104,13 @@ public:
 class RbfKernel final : private NonLinearKernel
 {
 private:
-    friend Kernel* ContructKernel(KernelType);
+    friend Kernel* KernelFactory(KernelType, size_t, double, double);
 
 private:
     double m_gamma = 2.0;
 
 private:
-    RbfKernel()                            = default;
+    explicit RbfKernel(double);
     RbfKernel(RbfKernel const&)            = delete;
     RbfKernel(RbfKernel&&)                 = delete;
     RbfKernel& operator=(RbfKernel const&) = delete;
@@ -205,18 +210,52 @@ double NonLinearKernel::Predict(Vector const& x, double b)
 }
 
 /* ----------------------------------------------------------------------------------------- */
+/* ----------------------------------------------------------------------------------------- */
+/* --------------------------------- PolynomialKernel -------------------------------------- */
+/* ----------------------------------------------------------------------------------------- */
+/* ----------------------------------------------------------------------------------------- */
+
+PolynomialKernel::PolynomialKernel(size_t degree, double gamma, double r)
+    :
+    m_degree(degree),
+    m_gamma(gamma),
+    m_r(r)
+{}
+
+/* ----------------------------------------------------------------------------------------- */
 
 double PolynomialKernel::operator()(Vector const& x_1, Vector const& x_2) const
 {
-    assert(false);
-    return 0.0;
+    double const base = (m_gamma * (x_1 * x_2) + m_r);
+    double ret = base;
+    for(int i = 1; i < m_degree; ++i){ ret *= base; }
+    return ret;
 }
+
+/* ----------------------------------------------------------------------------------------- */
+/* ----------------------------------------------------------------------------------------- */
+/* ------------------------------------- RbfKernel ----------------------------------------- */
+/* ----------------------------------------------------------------------------------------- */
+/* ----------------------------------------------------------------------------------------- */
+
+RbfKernel::RbfKernel(double gamma)
+    :
+    m_gamma(gamma)
+{}
 
 /* ----------------------------------------------------------------------------------------- */
 
 double RbfKernel::operator()(Vector const& x_1, Vector const& x_2) const
 {
-    return std::exp( - m_gamma * (x_1-x_2)*(x_1-x_2) );
+    return std::exp( -m_gamma * (x_1-x_2)*(x_1-x_2) );
+
+    // double integral = 0;
+    // double decimal  = std::modf(m_gamma * (x_1-x_2)*(x_1-x_2), &integral);
+
+    // double ret = M_E;
+    // for(int i = 1; i < integral; ++i){ ret *= M_E; }
+
+    // return 1.0 / (ret * std::exp(decimal));
 }
 
 /* ----------------------------------------------------------------------------------------- */
@@ -225,16 +264,16 @@ double RbfKernel::operator()(Vector const& x_1, Vector const& x_2) const
 /* ----------------------------------------------------------------------------------------- */
 /* ----------------------------------------------------------------------------------------- */
 
-Kernel* ContructKernel(KernelType type)
+Kernel* KernelFactory(KernelType type, size_t degree, double gamma, double coeff)
 {
     switch (type)
     {
     case LINEAR:
         return new LinearKernel();
     case POLYNOMIAL:
-        return new PolynomialKernel();
+        return new PolynomialKernel(degree, gamma, coeff);
     case RBF:
-        return new RbfKernel();
+        return new RbfKernel(gamma);
     default:
         break;
     }

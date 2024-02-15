@@ -6,7 +6,7 @@
 
 /* ----------------------------------------------------------------------------------------- */
 
-double epsilon = 1e-3;
+double epsilon = 1e-12;
 
 /* ----------------------------------------------------------------------------------------- */
 
@@ -103,7 +103,7 @@ size_t DualProblem::ChooseSecondLagrangeMultiplier(double E_2) const
 
 bool DualProblem::PerformStep(size_t i, size_t k, double E_2)
 {
-    if(i == k){ /*assert(false);*/ return false; }
+    if(i == k){ return false; }
     Kernel& K        = *(m_SVM.m_Kernel);
     Vector const x_1 = m_SVM.m_x->operator[](i);
     Vector const x_2 = m_SVM.m_x->operator[](k);
@@ -119,7 +119,7 @@ bool DualProblem::PerformStep(size_t i, size_t k, double E_2)
     double htta      = k_11 + k_22 - 2*k_12;
 
     auto [L_2, H_2] = EndsOfLine(a_1, a_2, s > 0);
-    if( H_2 < L_2 || std::fabs(L_2 - H_2) < epsilon ){ assert(false); return false; }
+    if( !(H_2 > L_2) ){ return false; }
     double L_1 = a_1 + s * (a_2 - L_2);
     double H_1 = a_1 + s * (a_2 - H_2);
 
@@ -173,7 +173,7 @@ bool DualProblem::ExamineExample(size_t k)
             if( PerformStep(p.first, k, E_2) ) { return true; }
         }
         
-        size_t StartPosition = rand() % m_SVM.m_a.size();
+        size_t StartPosition = k? k-1 : 1;
         size_t SIZE = m_SVM.m_a.size();
         for(size_t i = StartPosition; i < SIZE; ++i)
         {
@@ -196,7 +196,7 @@ bool DualProblem::Solve()
 {
     size_t NumberChanged = 0;
     bool ExamineAll = true;
-    
+
     while( NumberChanged > 0 || ExamineAll )
     {
         NumberChanged = 0;

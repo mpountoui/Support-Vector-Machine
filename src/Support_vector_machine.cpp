@@ -5,9 +5,11 @@
 
 /* ----------------------------------------------------------------------------------------- */
 
-SVM::SVM()
+SVM::SVM(KernelType kernel_type, double C, size_t degree, double gamma, double Coeff)
+:
+m_C(C)
 {
-    m_Kernel = ContructKernel(RBF);
+    m_Kernel = KernelFactory(kernel_type, degree, gamma, Coeff);
 }
 
 /* ----------------------------------------------------------------------------------------- */
