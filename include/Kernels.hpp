@@ -28,10 +28,10 @@ class Kernel
 {
 protected:
     Kernel()                         = default;
-    Kernel(Kernel const&)            = delete;
-    Kernel(Kernel&&)                 = delete;
-    Kernel& operator=(Kernel const&) = delete;
-    Kernel& operator=(Kernel&&)      = delete;
+    Kernel(Kernel const&)            = default;
+    Kernel(Kernel&&)                 = default;
+    Kernel& operator=(Kernel const&) = default;
+    Kernel& operator=(Kernel&&)      = default;
 
 public: 
     virtual ~Kernel()                = default;
@@ -51,6 +51,8 @@ public:
     virtual double Predict(Vector const&, double) = 0;
 
     virtual double operator()(Vector const&, Vector const&) const = 0;
+
+    virtual Kernel* clone() const = 0;
 };
 
 /* ----------------------------------------------------------------------------------------- */

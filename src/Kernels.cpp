@@ -16,10 +16,10 @@ private:
 
 private:
     LinearKernel()                               = default;
-    LinearKernel(LinearKernel const&)            = delete;
-    LinearKernel(LinearKernel&&)                 = delete;
-    LinearKernel& operator=(LinearKernel const&) = delete;
-    LinearKernel& operator=(LinearKernel&&)      = delete;
+    LinearKernel(LinearKernel const&)            = default;
+    LinearKernel(LinearKernel&&)                 = default;
+    LinearKernel& operator=(LinearKernel const&) = default;
+    LinearKernel& operator=(LinearKernel&&)      = default;
 
 public:
     ~LinearKernel()                              = default;
@@ -39,6 +39,8 @@ public:
     double Predict(Vector const&, double) override;
     
     double operator()(Vector const&, Vector const&) const override;
+
+    Kernel* clone() const override;
 };
 
 /* ----------------------------------------------------------------------------------------- */
@@ -50,15 +52,15 @@ protected:
 
 protected:
     NonLinearKernel()                                  = default;
-    NonLinearKernel(NonLinearKernel const&)            = delete;
-    NonLinearKernel(NonLinearKernel&&)                 = delete;
-    NonLinearKernel& operator=(NonLinearKernel const&) = delete;
-    NonLinearKernel& operator=(NonLinearKernel&&)      = delete;
+    NonLinearKernel(NonLinearKernel const&)            = default;
+    NonLinearKernel(NonLinearKernel&&)                 = default;
+    NonLinearKernel& operator=(NonLinearKernel const&) = default;
+    NonLinearKernel& operator=(NonLinearKernel&&)      = default;
 
 public:
     ~NonLinearKernel() override                        = default;
 
- public:    
+public:    
     void W_InitializeIfLinearKernel(std::vector<int>    const&,
                                     std::vector<double> const&,
                                     std::vector<Vector> const&) override;
@@ -87,16 +89,18 @@ private:
 
 private:
     PolynomialKernel(size_t, double, double);
-    PolynomialKernel(PolynomialKernel const&)            = delete;
-    PolynomialKernel(PolynomialKernel&&)                 = delete;
-    PolynomialKernel& operator=(PolynomialKernel const&) = delete;
-    PolynomialKernel& operator=(PolynomialKernel&&)      = delete;
+    PolynomialKernel(PolynomialKernel const&)            = default;
+    PolynomialKernel(PolynomialKernel&&)                 = default;
+    PolynomialKernel& operator=(PolynomialKernel const&) = default;
+    PolynomialKernel& operator=(PolynomialKernel&&)      = default;
 
 public:
     ~PolynomialKernel()                                  = default;
 
 public:
-    double operator()(Vector const&, Vector const&) const;
+    double operator()(Vector const&, Vector const&) const override;
+    
+    Kernel* clone() const override;
 };
 
 /* ----------------------------------------------------------------------------------------- */
@@ -111,16 +115,18 @@ private:
 
 private:
     explicit RbfKernel(double);
-    RbfKernel(RbfKernel const&)            = delete;
-    RbfKernel(RbfKernel&&)                 = delete;
-    RbfKernel& operator=(RbfKernel const&) = delete;
-    RbfKernel& operator=(RbfKernel&&)      = delete;
+    RbfKernel(RbfKernel const&)            = default;
+    RbfKernel(RbfKernel&&)                 = default;
+    RbfKernel& operator=(RbfKernel const&) = default;
+    RbfKernel& operator=(RbfKernel&&)      = default;
 
 public:
     ~RbfKernel()                           = default;
 
 public:
-    double operator()(Vector const&, Vector const&) const;
+    double operator()(Vector const&, Vector const&) const override;
+
+    Kernel* clone() const override;
 };
 
 /* ----------------------------------------------------------------------------------------- */
@@ -164,6 +170,13 @@ double LinearKernel::Predict(Vector const& x, double b)
 double LinearKernel::operator()(Vector const& x_1, Vector const& x_2) const
 {
     return x_1 * x_2;
+}
+
+/* ----------------------------------------------------------------------------------------- */
+
+Kernel* LinearKernel::clone() const
+{
+    return new LinearKernel(*this);
 }
 
 /* ----------------------------------------------------------------------------------------- */
@@ -233,6 +246,13 @@ double PolynomialKernel::operator()(Vector const& x_1, Vector const& x_2) const
 }
 
 /* ----------------------------------------------------------------------------------------- */
+
+Kernel* PolynomialKernel::clone() const
+{
+    return new PolynomialKernel(*this);
+}
+
+/* ----------------------------------------------------------------------------------------- */
 /* ----------------------------------------------------------------------------------------- */
 /* ------------------------------------- RbfKernel ----------------------------------------- */
 /* ----------------------------------------------------------------------------------------- */
@@ -256,6 +276,13 @@ double RbfKernel::operator()(Vector const& x_1, Vector const& x_2) const
     // for(int i = 1; i < integral; ++i){ ret *= M_E; }
 
     // return 1.0 / (ret * std::exp(decimal));
+}
+
+/* ----------------------------------------------------------------------------------------- */
+
+Kernel* RbfKernel::clone() const
+{
+    return new RbfKernel(*this);
 }
 
 /* ----------------------------------------------------------------------------------------- */

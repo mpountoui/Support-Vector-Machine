@@ -10,7 +10,7 @@ namespace py = pybind11;
 
 /* ----------------------------------------------------------------------------------------- */
 
-class pythonSVM : public SVM
+class pythonSVM : public MultiClassSVM
 {
 private:
     KernelType StringToType(std::string const &) const;
@@ -46,7 +46,7 @@ PYBIND11_MODULE(mySVM, m)
 
 pythonSVM::pythonSVM(std::string const & str, double C, size_t degree, double gamma, double Coeff)
 :
-SVM( StringToType(str), C, degree, gamma, Coeff )
+MultiClassSVM( StringToType(str), C, degree, gamma, Coeff )
 {}
 
 /* ----------------------------------------------------------------------------------------- */
@@ -74,6 +74,6 @@ KernelType pythonSVM::StringToType(std::string const &str) const
 
 py::array_t<int> pythonSVM::Predict(std::vector<Vector> const &x_vec) const
 {
-    auto y_vec = SVM::Predict(x_vec);
+    auto y_vec = MultiClassSVM::Predict(x_vec);
     return py::array_t<int>(y_vec.size(), y_vec.data());
 }

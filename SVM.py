@@ -7,11 +7,7 @@ import mySVM
 
 # ----------------------------------------------------------------------------------------- #
 
-X, Y = make_blobs(n_samples=100, centers=2, random_state=0, cluster_std=0.9)
-
-for i in range(len(Y)):
-    if(Y[i] == 0):
-        Y[i] = -1
+X, Y = make_blobs(n_samples=200, centers=4, random_state=0, cluster_std=0.5)
 
 #Visualize the data
 plt.scatter(X[:, 0], X[:, 1], c=Y, cmap=plt.cm.Paired)
@@ -23,8 +19,8 @@ plt.show()
 xx, yy = np.meshgrid( np.linspace(min(X[:, 0]), max(X[:, 0]) , 100), 
                       np.linspace(min(X[:, 1]), max(X[:, 1]) , 100) )
 
-clf_1 = svm.SVC(  kernel = 'rbf', C = 10.0, gamma = 3, degree = 6, coef0 = 1.0)
-clf_2 = mySVM.SVM(Kernel = 'rbf', C = 10.0, gamma = 3, degree = 6, coef0 = 1.0)
+clf_1 = svm.SVC(  kernel = 'rbf', C = 1.0, gamma = 1, degree = 6, coef0 = 1.0)
+clf_2 = mySVM.SVM(Kernel = 'rbf', C = 1.0, gamma = 1, degree = 6, coef0 = 1.0)
 
 clf_1.fit(X, Y)
 clf_2.fit(X, Y)

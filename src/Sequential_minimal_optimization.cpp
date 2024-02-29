@@ -196,7 +196,7 @@ bool DualProblem::Solve()
 {
     size_t NumberChanged = 0;
     bool ExamineAll = true;
-
+    int counter = 0;
     while( NumberChanged > 0 || ExamineAll )
     {
         NumberChanged = 0;
@@ -229,6 +229,8 @@ bool DualProblem::Solve()
         {
             ExamineAll = true;
         }
+
+        if((++counter % 1000) == 0){ std::cout << "Number of iterations at Solve " << counter << std::endl; }
     }
 
     return true;
