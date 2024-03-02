@@ -12,22 +12,23 @@ $ make <br />
 $ make install <br />
 
 # Examples: <br /> <br />
+
 | Kernel  | C  |
 | ------- | -- |
 | linear  | 10 |
-<br />
+
 ![linear_c_10](https://github.com/mpountoui/Support-Vector-Machine/assets/119242445/57f4a5cd-4718-4b71-89e9-083e534cbf93)
 <br />
 <br />
 
-Kernel : rbf <br />
-C : 10 <br />
-gamma : 1
+| Kernel  | C  | gamma |
+| ------- | -- | ----- |
+| rbf     | 10 |   1   |
+
 ![rbf_c_10_g_1](https://github.com/mpountoui/Support-Vector-Machine/assets/119242445/f84e4331-69a4-478f-9400-f7d38d9a1984)
 
-Kernel : poly <br />
-C : 10 <br />
-gamma  : 1
-degree : 2
-coef0  : 1.0
+| Kernel  | C  | gamma | degree | coef0 |
+| ------- | -- | ----- | -----  | ----- |
+| poly    | 10 |   1   |  2     | 1.0   |
+
 ![poly_c_10_g_1_d_2_cf_1](https://github.com/mpountoui/Support-Vector-Machine/assets/119242445/ba3c6633-8a45-46ad-899c-ce5c87518690)
