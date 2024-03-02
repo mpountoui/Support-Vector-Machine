@@ -10,3 +10,7 @@ $ cd build <br />
 $ cmake .. -D PYTHON_LIBRARY_DIR=".../Support-Vector-Machine/venv/lib/python3.9/site-packages" <br />
 $ make <br />
 $ make install <br />
+
+Examples: <br />
+![linear_c_10](https://github.com/mpountoui/Support-Vector-Machine/assets/119242445/57f4a5cd-4718-4b71-89e9-083e534cbf93)
+
