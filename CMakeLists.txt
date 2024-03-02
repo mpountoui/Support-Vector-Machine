@@ -34,8 +34,3 @@ ADD_LIBRARY(LibsModule
 )
 add_executable(UnitTests "src/UnitTests.cpp")
 target_link_libraries(UnitTests LibsModule)
-
-# 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
-#cmake .. -D PYTHON_LIBRARY_DIR="/Users/ioannisbountouris/Support-Vector-Machine/venv/lib/python3.9/site-packages"
-#make
-#make install

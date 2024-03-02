@@ -11,16 +11,16 @@ X, Y = make_blobs(n_samples=200, centers=4, random_state=0, cluster_std=0.5)
 
 #Visualize the data
 plt.scatter(X[:, 0], X[:, 1], c=Y, cmap=plt.cm.Paired)
-plt.xlabel('Weight')
-plt.ylabel('Sweetness')
-plt.title('Toy Dataset: Apples vs Oranges')
+plt.xlabel('x')
+plt.ylabel('y')
+plt.title('Toy Dataset')
 plt.show()
 
 xx, yy = np.meshgrid( np.linspace(min(X[:, 0]), max(X[:, 0]) , 100), 
                       np.linspace(min(X[:, 1]), max(X[:, 1]) , 100) )
 
-clf_1 = svm.SVC(  kernel = 'rbf', C = 1.0, gamma = 1, degree = 6, coef0 = 1.0)
-clf_2 = mySVM.SVM(Kernel = 'rbf', C = 1.0, gamma = 1, degree = 6, coef0 = 1.0)
+clf_1 = svm.SVC(  kernel = 'poly', C = 10.0, gamma = 1, degree = 2, coef0 = 1.0)
+clf_2 = mySVM.SVM(Kernel = 'poly', C = 10.0, gamma = 1, degree = 2, coef0 = 1.0)
 
 clf_1.fit(X, Y)
 clf_2.fit(X, Y)
@@ -36,15 +36,15 @@ fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(10, 3))
 # Visualize the data and decision boundary
 ax1.scatter(X[:, 0], X[:, 1], c=Y, cmap=plt.cm.Paired)
 ax1.contourf(xx, yy, Z_1, alpha=0.3)
-ax1.set_xlabel('Weight')
-ax1.set_ylabel('Sweetness')
+ax1.set_xlabel('x')
+ax1.set_ylabel('y')
 ax1.set_title('sklearn-SVM Classification')
 
 # Visualize the data and decision boundary
 ax2.scatter(X[:, 0], X[:, 1], c=Y, cmap=plt.cm.Paired)
 ax2.contourf(xx, yy, Z_2, alpha=0.3)
-ax2.set_xlabel('Weight')
-ax2.set_ylabel('Sweetness')
+ax2.set_xlabel('x')
+ax2.set_ylabel('y')
 ax2.set_title('mySVM Classification')
 
 plt.show()
