@@ -15,6 +15,7 @@ $ make install <br />
 | Kernel  | C  |
 | ------- | -- |
 | linear  | 10 |
+<br />
 ![linear_c_10](https://github.com/mpountoui/Support-Vector-Machine/assets/119242445/57f4a5cd-4718-4b71-89e9-083e534cbf93)
 <br />
 <br />
